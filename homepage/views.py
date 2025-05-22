@@ -5,4 +5,4 @@ class HomePageView(TemplateView):
     template_name = 'index.html'
 
 class WalletPageView(TemplateView):
-    template_name = 'wallet.html'
+    template_name = 'pages/index2.html'

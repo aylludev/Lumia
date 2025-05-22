@@ -47,7 +47,7 @@
   <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container position-relative d-flex align-items-center justify-content-between">
 
-      <a href={% url 'home' %} class="logo d-flex align-items-center me-auto me-xl-0">
+      <a href={% url 'homepage' %} class="logo d-flex align-items-center me-auto me-xl-0">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.webp" alt=""> -->
         <h1 class="sitename">Lumia</h1><span>.</span>
@@ -1360,6 +1360,22 @@
   <!-- Main JS File -->
   <script src= {% static 'js/main.js' %}></script>
   {% endblock body %}
+  <script>
+    {% if messages %}
+        var html = '<p>';
+        {% for message in messages %}
+            html += '{{ message }}<br>';
+        {% endfor %}
+        html += '</p>';
+        Swal.fire({
+            title: '{% if messages.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error!{% else %}¡Éxito!{% endif %}',
+            html: html,
+            icon: '{% if messages.level == DEFAULT_MESSAGE_LEVELS.ERROR %}error{% else %}success{% endif %}'
+        });
+    {% endif %}
+
+  </script>
+
 </body>
 
 

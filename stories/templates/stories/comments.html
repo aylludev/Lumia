@@ -1,0 +1,95 @@
+{% extends "pages/index2.html" %}
+{% load static %}
+
+{% block app-content %}
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-3">
+    
+              </div>
+              <!-- /.col -->
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header p-2">
+                    <div class="tab-content">
+                      <div class="tab-pane active" id="activity">
+                          
+
+                  </div><!-- /.card-header -->
+                  <div class="card-body">
+                    <div class="tab-content">
+                      <div class="tab-pane active" id="activity">
+    
+                        <!-- Post -->
+                        <div class="post">
+                            <div class="user-block">
+                                <img class="img-circle img-bordered-sm" src={{ story.user.get_image }} alt="User Image">
+                                <span class="username">
+                                    <a href="#">{{ story.user.get_full_name }}</a>
+                                    <a href={% url 'create_story' %} class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                                </span>
+                                <span class="description">{{ story.category }}</span>
+                            </div>
+                          <!-- /.user-block -->
+                            <p>
+                                {{ story.description }}
+                            </p>
+                            <div class="row mb-3">
+                                {% if story.is_image %}
+                                    <img class="img-fluid" src={{ story.get_file }} alt="Photo">
+                                {% elif story.is_video %}
+                                    <video width="100%" controls><source src="{{ story.get_file }}" type="video/mp4">Your browser does not support the video tag.</video>
+                                {% endif %}
+                            </div>
+                          <p>
+                            <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Compartir</a>
+                            <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Me Gusta</a>
+                            <span class="float-right">
+                              <a href="#" class="link-black text-sm">
+                                <i class="far fa-comments mr-1"></i> Comentarios (5)
+                              </a>
+                            </span>
+                          </p>    
+                        </div>
+                        <div class="post">
+                            <form action="." method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="{{ action }}">
+                                    <div class="row">
+                                        <div class="col-10"> {{ form.description }} </div>
+                                        <div class="col-2"> <button type="submit" class="btn bg-primary">Comentar</button>  </div>
+                                    </div>
+                            </form>
+                        </div>
+                        {% for comment in comments %}
+                        <div class="card shadow-none" style="border:None;">
+                            <div class="user-block">
+                                <img class="img-circle img-bordered-sm" src={{ comment.user.get_image }} alt="User Image">
+                                <span class="username"> <a href="#">{{ comment.user.get_full_name }}</a> </span>
+                                <p> {{ comment.description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <!-- /.post -->
+                      </div>
+                      <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                  </div><!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+              <!-- /.col -->
+              <div class="col-md-3">
+              
+              </div>
+            </div>
+            <!-- /.row -->
+          </div><!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+      </div>
+      <!-- /.content-wrapper -->
+{% endblock %}

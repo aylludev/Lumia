@@ -23,8 +23,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomePageView.as_view(), name='homepage'),
-    path('wallet', WalletPageView.as_view(), name='home'),
-    path('', include('accounts.urls')), 
+    path('', include('accounts.urls')),
+    path('', include('stories.urls')), 
 ]
 
 if settings.DEBUG:
