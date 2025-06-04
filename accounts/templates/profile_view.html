@@ -11,10 +11,10 @@
                 <div class="card card-primary card-outline">
                   <div class="card-body box-profile">
                     <div class="text-center">
-                      <img class="profile-user-img img-fluid img-circle" src={{ request.user.get_image }} alt="User profile picture">
+                      <img class="profile-user-img img-fluid img-circle" src={{ user.get_image }} alt="User profile picture">
                     </div>
     
-                    <h3 class="profile-username text-center">{{ request.user.username }}</h3>
+                    <h3 class="profile-username text-center">{{ user.username }}</h3>
                     <ul class="list-group list-group-unbordered mb-3">
                       <li class="list-group-item">
                         <b>Seguidores</b> <a class="float-right">1,322</a>
@@ -26,10 +26,15 @@
                         <b>Amigos</b> <a class="float-right">13,287</a>
                       </li>
                     </ul>
-    
-                    <a href={% url 'update_profile' request.user.pk %} class="btn btn-primary btn-block"><b>Editar Perfil</b></a>
-                    <a href={% url 'update_password' request.user.pk %} class="btn btn-primary btn-block"><b>Editar Password</b></a>
-                  </div>
+                    
+                    {% if request.user.pk == user.pk %}
+                      <a href={% url 'update_profile' user.pk %} class="btn btn-primary btn-block"><b>Editar Perfil</b></a>
+                      <a href={% url 'update_password' user.pk %} class="btn btn-primary btn-block"><b>Editar Password</b></a>
+                    {% endif %}
+                    {% if request.user.pk != user.pk %}
+                      <a href="#" class="btn btn-primary btn-block"><b>Enviar Mensaje</b></a>
+                    {% endif %}
+                    </div>
                   <!-- /.card-body -->
                 </div>
                 <!-- /.card -->

@@ -1,0 +1,176 @@
+{% extends "pages/index2.html" %}
+
+{% block app-content %}
+
+<div class="content-wrapper" style="min-height: 1302.12px;">
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+            <a href={% url 'messages' %} class="btn btn-primary btn-block mb-3">Back to Inbox</a>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Folders</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <ul class="nav nav-pills flex-column">
+                  <li class="nav-item active">
+                    <a href={% url 'messages' %} class="nav-link">
+                      <i class="fas fa-inbox"></i> Inbox
+                      <span class="badge bg-primary float-right">{{ count }}</span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href={% url 'sent_messages' %} class="nav-link">
+                      <i class="far fa-envelope"></i> Sent
+                      <span class="badge bg-primary float-right">{{ count_sent }}</span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-file-alt"></i> Drafts
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="fas fa-filter"></i> Junk
+                      <span class="badge bg-warning float-right">65</span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-trash-alt"></i> Trash
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Labels</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <ul class="nav nav-pills flex-column">
+                  <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="far fa-circle text-danger"></i> Important</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="far fa-circle text-warning"></i> Promotions</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="far fa-circle text-primary"></i> Social</a>
+                  </li>
+                </ul>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+          <div class="col-md-9">
+            <div class="card card-primary card-outline">
+              <div class="card direct-chat direct-chat-primary">
+                <div class="card-header ui-sortable-handle" style="cursor: move;">
+                  <h3 class="card-title">Chat Directo</h3>
+  
+                  <div class="card-tools">
+                    <span title="3 New Messages" class="badge badge-primary">3</span>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" title="Contacts" data-widget="chat-pane-toggle">
+                      <i class="fas fa-comments"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <!-- Conversations are loaded here -->
+                  <div class="direct-chat-messages">
+                    {% for i in messages %}
+                    {% if i.receiver == request.user %}  
+                    <!-- Message. Default to the left -->
+                    <div class="direct-chat-msg">
+                      <div class="direct-chat-infos clearfix">
+                        <span class="direct-chat-name float-left">{{ i.sender }}</span>
+                        <span class="direct-chat-timestamp float-right"> {{ i.timestamp }}</span>
+                      </div>
+                      <!-- /.direct-chat-infos -->
+                      <img class="direct-chat-img" src={{ i.sender.get_image }} alt="message user image">
+                      <!-- /.direct-chat-img -->
+                      <div class="direct-chat-text"> {{ i.content }}
+                      </div>
+                      <!-- /.direct-chat-text -->
+                    </div>
+                    <!-- /.direct-chat-msg -->
+                    {% else %}
+                    <!-- Message to the right -->
+                    <div class="direct-chat-msg right">
+                      <div class="direct-chat-infos clearfix">
+                        <span class="direct-chat-name float-right">{{ i.sender }}</span>
+                        <span class="direct-chat-timestamp float-left">{{ i.timestamp }}</span>
+                      </div>
+                      <!-- /.direct-chat-infos -->
+                      <img class="direct-chat-img" src={{ i.sender.get_image }} alt="message user image">
+                      <!-- /.direct-chat-img -->
+                      <div class="direct-chat-text">
+                        {{ i.content }}
+                      </div>
+                      <!-- /.direct-chat-text -->
+                    </div>
+                    <!-- /.direct-chat-msg -->
+                  {% endif %}
+                  {% endfor %}
+                    <!-- /.contacts-list -->
+                  </div>
+                  <!-- /.direct-chat-pane -->
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <form action="#" method="post">
+                    <div class="input-group">
+                      <input type="text" name="message" placeholder="Type Message ..." class="form-control">
+                      <span class="input-group-append">
+                        <button type="button" class="btn btn-primary">Send</button>
+                      </span>
+                    </div>
+                  </form>
+                </div>
+                <!-- /.card-footer-->
+              </div>
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+{% endblock  %}
+
+{% block messages %}
+
+{% endblock messages %}

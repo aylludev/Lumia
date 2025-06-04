@@ -16,15 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from homepage.views import HomePageView, WalletPageView
+from homepage.views import HomePageView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     path('', HomePageView.as_view(), name='homepage'),
     path('', include('accounts.urls')),
     path('', include('stories.urls')), 
+    path('', include('communication.urls')),
 ]
 
 if settings.DEBUG:

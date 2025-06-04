@@ -67,8 +67,10 @@
                           <div class="user-block">
                             <img class="img-circle img-bordered-sm" src={{ story.user.get_image }} alt="User Image">
                             <span class="username">
-                              <a href="#">{{ story.user.get_full_name }}</a>
-                              <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                              <a href={% url 'profile' story.user.pk %}>{{ story.user.get_full_name }}</a>
+                              {% if story.user == request.user %} <a href={% url 'update_story' story.pk %} class="float-right btn-tool"><i class="bi bi-pencil" title="Editar"></i></a> 
+                              {% else %} <a href={% url "report_story" story.pk %} class="float-right btn-tool"><i class="bi bi-layout-text-sidebar" title="Reportar"></i></a>
+                              {% endif %}
                             </span>
                             <span class="description">{{ story.category }}</span>
                           </div>
@@ -83,15 +85,21 @@
                             <video width="100%" controls><source src="{{ story.get_file }}" type="video/mp4">Your browser does not support the video tag.</video>
                           {% endif %}
                         </div>
+                        {% if user.is_authenticated %}
+                          <form action="" method="POST">
                           <p>
-                            <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Compartir</a>
-                            <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Me Gusta</a>
+                            <a href="{% url 'like_story' story.pk %}"  type="submit" class="link-black text-sm"
+                              {% if story.user_liked %} style="color:blue;"><i class="far fa-thumbs-down mr-1"></i> Unlike  
+                              {% else %}><i class="far fa-thumbs-up mr-1"></i> Like
+                              {% endif %}
+                            </a><span>  ({{ story.like_count }})</span>
                             <span class="float-right">
                               <a href={% url 'create_comment' story.pk %} class="link-black text-sm">
                                 <i class="far fa-comments mr-1"></i> Comentarios ({{ story.comment_count }})
                               </a>
                             </span>
-                          </p>    
+                          </p>
+                          {% endif %}    
                         </div>
                         <!-- /.post -->
                       {% endfor %}

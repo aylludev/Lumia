@@ -1,18 +1,16 @@
-from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.contrib.auth.views import LoginView
-from django.views.generic import TemplateView
-from django.views.generic import RedirectView, CreateView, UpdateView, FormView
+from django.views.generic import RedirectView, CreateView, UpdateView, FormView, DetailView
 from django.contrib.auth import logout
+from django.contrib import messages
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from Lumia import settings
 from accounts.forms import UserForm, UserProfileForm
 from accounts.models import CustomUser
-from stories.models import Story, Comment
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
-from datetime import datetime
-from django.contrib.auth.forms import PasswordChangeForm
+from stories.models import Story
 
 # Create your views here.
 class LoginFormView(LoginView):
@@ -57,19 +55,22 @@ class UserCreateView(CreateView):
         context['action'] = 'add'
         return context
 
-
-class ProfileView(LoginRequiredMixin, TemplateView):
+class ProfileView(LoginRequiredMixin, DetailView):
     template_name = 'profile_view.html'
+    model = CustomUser
+    context_object_name = 'user'
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'Debes iniciar sesión para ver tu perfil.')
+            return redirect('login')
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Mi perfil'
-        stories = Story.objects.filter(user=self.request.user).order_by('-created_at')
-        for story in stories:
-            story.comment_count = Comment.objects.filter(story=story.id).count()
+        user = self.get_object()
+        stories = Story.objects.filter(user_id=user).annotate(comment_count=Count('comment')).order_by('-created_at')
         context['stories'] = stories
         context['entity'] = 'Perfil'
         return context

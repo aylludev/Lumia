@@ -43,3 +43,14 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.description
+    
+class Like(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    story = models.ForeignKey(Story, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} likes {self.story.description}"
+    
+    class Meta:
+        unique_together = ('user', 'story')
