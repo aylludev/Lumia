@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('', include('stories.urls')), 
     path('', include('communication.urls')),
+    path('', include('admin.urls')),  # Admin dashboard URLs
 ]
 
 if settings.DEBUG:
