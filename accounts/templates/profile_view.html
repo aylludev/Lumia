@@ -32,7 +32,7 @@
                       <a href={% url 'update_password' user.pk %} class="btn btn-primary btn-block"><b>Editar Password</b></a>
                     {% endif %}
                     {% if request.user.pk != user.pk %}
-                      <a href="#" class="btn btn-primary btn-block"><b>Enviar Mensaje</b></a>
+                      <a href={% url 'chat_message' user.pk %} class="btn btn-primary btn-block"><b>Enviar Mensaje</b></a>
                     {% endif %}
                     </div>
                   <!-- /.card-body -->

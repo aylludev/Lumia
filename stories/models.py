@@ -16,7 +16,8 @@ class Story(models.Model):
     description = models.TextField(verbose_name='Descripción', max_length=500)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Categoría')
     file = models.FileField(upload_to='media/%Y/%m/%d', null=True, blank=True, verbose_name='Archivo')
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
+    is_solved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

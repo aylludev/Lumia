@@ -31,7 +31,7 @@ class CreateStoryView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.is_active = True
+        form.instance.is_active = False
         form.instance.created_at = datetime.now()
         messages.success(self.request, 'Historia creada correctamente!')
         return super().form_valid(form)
