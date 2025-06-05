@@ -7,6 +7,33 @@ from communication.forms import MessageForm, ReportForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from accounts.models import CustomUser
+
+@login_required
+def direct_chat_view(request, username):
+    receiver = get_object_or_404(CustomUser, username=username)
+    messages_qs = Message.objects.filter(
+        sender__in=[request.user, receiver],
+        receiver__in=[request.user, receiver]
+    )
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Message.objects.create(
+                sender=request.user,
+                receiver=receiver,
+                content=content
+            )
+            return redirect('direct_chat', username=receiver.username)
+
+    context = {
+        'receiver': receiver,
+        'messages': messages_qs,
+    }
+    return render(request, 'view_messages.html', context)
 
 
 # Create your views here.
@@ -46,6 +73,8 @@ class CreateMessageView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Enviar Mensaje'
+        context['count'] = Message.objects.filter(receiver=self.request.user).count()
+        context['count_sent'] = Message.objects.filter(sender=self.request.user).count()
         return context
 
 class ListSentMessagesView(LoginRequiredMixin, ListView):
@@ -63,25 +92,6 @@ class ListSentMessagesView(LoginRequiredMixin, ListView):
         context['count'] = Message.objects.filter(receiver=self.request.user).count()
         context['messages'] = messages
         context['count_sent'] = messages.count()
-        return context
-
-class ChatMessageView(LoginRequiredMixin, CreateView):
-    model = Message
-    form_class = MessageForm
-    template_name = 'view_messages.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user_pk = self.kwargs['pk']  # ID del otro usuario
-        user = self.request.user
-
-        # Consultar mensajes donde el request.user sea sender o receiver
-        messages = Message.objects.filter(
-            Q(sender=user, receiver_id=user_pk) | Q(sender_id=user_pk, receiver=user)
-        ).order_by('timestamp')
-
-        context['messages'] = messages
-        context['title'] = 'Chat'
         return context
 
 class ReportCreateView(LoginRequiredMixin, CreateView):

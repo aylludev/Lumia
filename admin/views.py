@@ -47,8 +47,12 @@ class AdminDashboardView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['stories'] = Story.objects.all().order_by('-created_at')[0:10]
+        context['stories_solved'] = Story.objects.filter(is_solved=True).count()
+        context['stories_unsolved'] = Story.objects.filter(is_solved=False).count()
+        context['stories_down'] = Story.objects.filter(is_solved=False, is_active=False).count()
         context['users'] = CustomUser.objects.all().order_by('-date_joined')[0:10]
         context['messages'] = Message.objects.all().order_by('timestamp')
+        context['message_count'] = Message.objects.count()
         context['categories'] = Category.objects.all().order_by('name')
         context['reports'] = Report.objects.all().order_by('-created_at')[0:10]
         context['total_messages'] = Message.objects.count()

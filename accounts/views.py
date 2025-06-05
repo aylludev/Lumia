@@ -72,6 +72,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
         user = self.get_object()
         stories = Story.objects.filter(user_id=user).annotate(comment_count=Count('comment')).order_by('-created_at')
         context['stories'] = stories
+        context['stories_count'] = stories.count()
         context['entity'] = 'Perfil'
         return context
 
@@ -108,4 +109,10 @@ class PasswordUpdateView(LoginRequiredMixin, FormView):
         form.fields['new_password1'].widget.attrs['placeholder'] = 'Nueva contraseña'
         form.fields['new_password2'].widget.attrs['placeholder'] = 'Confirmar nueva contraseña'
         return form
-
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Cambiar contraseña'
+        context['entity'] = 'Usuarios'
+        context['list_url'] = reverse_lazy('create_story')
+        return context

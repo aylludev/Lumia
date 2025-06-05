@@ -74,7 +74,6 @@
             </a>
           </li>
           <li class="nav-item d-none d-md-block"><a href={% url 'create_story' %} class="nav-link">Home</a></li>
-          <li class="nav-item d-none d-md-block"><a href="#" class="nav-link">Contact</a></li>
         </ul>
         <!--end::Start Navbar Links-->
         <!--begin::End Navbar Links-->
@@ -182,7 +181,7 @@
           <img src={% static '/lib/AdminLTE-4.0.0/dist/assets/img/AdminLTELogo.png' %} alt="AdminLTE Logo" class="brand-image opacity-75 shadow" />
           <!--end::Brand Image-->
           <!--begin::Brand Text-->
-          <span class="brand-text fw-light">GAIA PRIME</span>
+          <span class="brand-text fw-light">LUMIA</span>
           <!--end::Brand Text-->
         </a>
         <!--end::Brand Link-->
@@ -233,8 +232,8 @@
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item" aria-current="page">Dashboard v2</li>
+                <li class="breadcrumb-item"><a href={% url 'create_story' %}>Home</a></li>
+                <li class="breadcrumb-item" aria-current="page">Lumia</li>
               </ol>
             </div>
           </div>
@@ -451,7 +450,7 @@
                         <div class="col-3 p-2">
                           <img class="img-fluid rounded-circle" src="{{ user.get_image }}"
                             alt="User Image" />
-                          <a class= "fw-bold fs-7 text-truncate w-100 p-0" href="#">
+                          <a class= "fw-bold fs-7 text-truncate w-100 p-0" href={% url 'profile' user.pk %}>
                             {{ user.username }}
                           </a>
                           <div class="fs-8">{{ user.last_login.date }}</div>
@@ -498,14 +497,16 @@
                         
                         <tr>
                           <td>
-                            <a href="pages/examples/invoice.html"
+                            <a href={% url 'create_comment' story.pk %}
                               class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">{{ story.id }}</a>
                           </td>
                           <td>{{ story.description }}</td>
                           {% if story.is_active %}
                           <td><span class="badge text-bg-warning"> En Proceso </span></td>
-                          {% else %}
+                          {% elif story.is_solved %}
                           <td><span class="badge text-bg-success"> Resuelta </span></td>
+                          {% else %}
+                          <td><span class="badge text-bg-danger"> Desactivada </span></td>
                           {% endif %}
                         </tr>
                         <tr>
@@ -528,8 +529,8 @@
               <div class="info-box mb-3 text-bg-warning">
                 <span class="info-box-icon"> <i class="bi bi-tag-fill"></i> </span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Inventory</span>
-                  <span class="info-box-number">5,200</span>
+                  <span class="info-box-text">Historias en proceso</span>
+                  <span class="info-box-number">{{ stories_unsolved }}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -537,8 +538,8 @@
               <div class="info-box mb-3 text-bg-success">
                 <span class="info-box-icon"> <i class="bi bi-heart-fill"></i> </span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Mentions</span>
-                  <span class="info-box-number">92,050</span>
+                  <span class="info-box-text">Historias resueltas</span>
+                  <span class="info-box-number">{{ stories_solved }}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -546,8 +547,8 @@
               <div class="info-box mb-3 text-bg-danger">
                 <span class="info-box-icon"> <i class="bi bi-cloud-download"></i> </span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Downloads</span>
-                  <span class="info-box-number">114,381</span>
+                  <span class="info-box-text">Historias desactivadas</span>
+                  <span class="info-box-number">{{ stories_down }}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -555,8 +556,8 @@
               <div class="info-box mb-3 text-bg-info">
                 <span class="info-box-icon"> <i class="bi bi-chat-fill"></i> </span>
                 <div class="info-box-content">
-                  <span class="info-box-text">Direct Messages</span>
-                  <span class="info-box-number">163,921</span>
+                  <span class="info-box-text">Mensajes enviados</span>
+                  <span class="info-box-number">{{ message_count }}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -584,7 +585,7 @@
                         <img src="{{ report.reporter.get_image }}" alt="Product Image" class="img-size-50" />
                       </div>
                       <div class="col-10">
-                        <a href="javascript:void(0)" class="fw-bold">
+                        <a href={% url 'create_comment' report.story.pk %} class="fw-bold">
                           {{ report.reporter.username }} en Historia {{ report.story.id }}
                           {% if report.is_resolved %}
                           <span class="badge text-bg-success float-end"> Resuelto </span>
